@@ -1,9 +1,41 @@
-TMDB = function(options){
-  options = options || {}
-  this.config = _.defaults(options, {
-    url: 'https://api.themoviedb.org/3/',
-    key: Meteor.settings.tmdb.api.key
+TMDB = function(defaults){
+
+  // constructor ////////////////////////
+  defaults = defaults || {}
+  defaults.apiUrl = 'https://api.themoviedb.org/3/'
+
+  // cache the /configuration from tmdb for 3 days before reloading
+  // this can be overridden by passing
+  // {reload:true} or {reloadInterval: moment().subtract('1','day').toDate()} into 'defaults'
+  _.defaults(defaults,{
+    reload: false,
+    reloadInterval: moment().subtract('3','days').toDate()
   })
+
+  // get the default config for this service from ServiceConfiguration
+  this.config = ServiceConfiguration.configurations.findOne({service: 'tmdb'})
+  if( !this.config ){
+    throw new ServiceConfiguration.ConfigError('TMDB not configured')
+  }
+
+  this.init = function(){
+    if( defaults.reload || !this.config.data || !this.config.loaded || (this.config.loaded < defaults.reloadInterval) ){
+      this.reload()
+    }
+  }
+
+  this.reload = function(){
+    var response = HTTP.call('GET', defaults.apiUrl+'configuration',{params:{api_key: this.config.apiKey}})
+    if( response.statusCode == 200 ){
+      ServiceConfiguration.configurations.update(
+        {service: 'tmdb'},
+        {$set: {
+          'loaded': new Date(),
+          'data':response.data}
+        })
+      this.config = ServiceConfiguration.configurations.findOne({service: 'tmdb'})
+    }
+  }
 
   this.execute = function(options, callback){
     if( typeof options === 'string' ){
@@ -15,15 +47,15 @@ TMDB = function(options){
       params: {},
       method: 'GET'
     })
-    _.defaults(options.params, {api_key: this.config.key})
+    _.defaults(options.params, {api_key: this.config.apiKey})
 
     if( !options.url || (options.url.length < 1) ){
       callback(new Meteor.Error(500, 'No path to TMDB API provided.'))
       return
     }
 
-    if( options.url.indexOf(this.config.url) != 0 ){
-      options.url = this.config.url + options.url
+    if( options.url.indexOf(defaults.apiUrl) != 0 ){
+      options.url = defaults.apiUrl + options.url
     }
 
     HTTP.call(options.method, options.url, {params: options.params}, function(err, response){
@@ -91,4 +123,7 @@ TMDB = function(options){
       }
     })
   }
+
+  // this must be called after all functions are declared above
+  this.init()
 }

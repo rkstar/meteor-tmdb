@@ -12,19 +12,19 @@ A wrapper for the TMDB (TheMovieDataBase.org) API (v3)
 1. `meteor add rkstar:tmdb`
 2. Use inside `Meteor.method()` calls only! Future versions may allow you to make calls directly from the client, but this is server only for now.
 
-By default, this library will look for your TMDB API key in `Meteor.settings.tmdb.api.key`.  You can also specify the API key when you instantiate the service:
+This library uses the `service-configuration` package to store your api key. You can configure this api like this:
+in `/server/lib/tmdb-configuration.js`
 ```
-var tmdb = new TMDB({key: <my_tmdb_api_key>})
-tmdb.search('person', 'brad pitt', function(err, response){
-  if( err ){
-    console.error(err)
-  } else {
-    console.log(response)
-  }
+ServiceConfiguration.configurations.update({
+  service: 'tmdb'
+},{$set: {
+  apiKey: '<your-tmdb-api-key>'
+}},{
+  upsert: true
 })
 ```
 
-## Methods
+## Methods (server)
 `TMDB.search(path, query, callback)`
 * path => eg. "person"
 * query => eg. "brad pitt"
@@ -34,6 +34,11 @@ tmdb.search('person', 'brad pitt', function(err, response){
 * id => eg. nm0000093
 * external_source => eg. 'IMDB'
 * callback => `function(err, response){}`
+
+## Methods (client)
+You can access the [TMDB API Configuration](http://docs.themoviedb.apiary.io/#reference/configuration) by using the var `tmdb.config.data`
+You will be able to see the last time that data was reloaded via `tmdb.config.loaded` and you can choose to force reload via the API when you instantiate with `new TMDB({reload:true})`
+
 
 ## Reading
 [The Movie Database](https://www.themoviedb.org)
