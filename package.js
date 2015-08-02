@@ -16,6 +16,7 @@ Package.onUse(function(api) {
   api.use('underscore', 'server')
   api.use('http', 'server')
   api.use('service-configuration', 'server')
+  api.use('momentjs:moment', 'server')
 
   api.addFiles('tmdb-common.js')
   api.addFiles('tmdb-client.js', 'client')

@@ -6,6 +6,7 @@ A wrapper for the TMDB (TheMovieDataBase.org) API (v3)
 ## Package Dependencies
 * underscore
 * http
+* momentjs:moment
 * a valid API key from [TMDB](https://www.themoviedb.org)
 
 ## Usage
