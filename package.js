@@ -1,6 +1,6 @@
 Package.describe({
   name: 'rkstar:tmdb',
-  version: '1.1.0',
+  version: '1.1.1',
   // Brief, one-line summary of the package.
   summary: 'A wrapper for the TMDB (TheMovieDataBase.org) API (v3)',
   // URL to the Git repository containing the source code for this package.
@@ -17,11 +17,10 @@ Package.onUse(function(api) {
   api.use('http', 'server')
   api.use('service-configuration', 'server')
 
-  api.addFiles('tmdb-common.js')
-  api.addFiles('tmdb-client.js', 'client')
   api.addFiles('tmdb-publication.js', 'server')
-  api.addFiles('tmdb.js', 'server')
+  api.addFiles('tmdb-server.js', 'server')
+  api.addFiles('tmdb-client.js', 'client')
 
-  api.export("tmdb")
+  api.export("TMDBConfig")
   api.export("TMDB")
 })
