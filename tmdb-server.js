@@ -124,6 +124,26 @@ TMDB = function(defaults){
     })
   }
 
+  this.person = function(id, search, callback){
+    if( !callback && (typeof search == 'function') ){
+      callback = search
+      search = null
+    }
+
+    var id_required = !(search && (['popular','latest'].indexOf(search) != -1))
+    if( !id && id_required ){
+      callback(new Meteor.Error(500, 'No profile id specified'))
+      return
+    }
+
+    var url = 'person'
+    url += (id_required) ? '/'+id : ''
+    url += (search) ? '/'+search : ''
+    this.execute({
+      url: url
+    }, callback)
+  }
+
   // this must be called after all functions are declared above
   this.init()
 }
