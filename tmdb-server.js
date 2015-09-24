@@ -124,7 +124,7 @@ TMDB = function(defaults){
     })
   }
 
-  this.person = function(id, search, callback){
+  this.specific = function(url, err, id, search, callback){
     if( !callback && (typeof search == 'function') ){
       callback = search
       search = null
@@ -132,16 +132,26 @@ TMDB = function(defaults){
 
     var id_required = !(search && (['popular','latest'].indexOf(search) != -1))
     if( !id && id_required ){
-      callback(new Meteor.Error(500, 'No profile id specified'))
+      callback(new Meteor.Error(500, err))
       return
     }
-
-    var url = 'person'
     url += (id_required) ? '/'+id : ''
     url += (search) ? '/'+search : ''
     this.execute({
       url: url
     }, callback)
+  }
+
+  this.person = function(id, search, callback){
+    this.specific('person', 'No profile id specified', id, search, callback)
+  }
+
+  this.tv = function(id, search, callback){
+    this.specific('tv', 'No tv id specified', id, search, callback)
+  }
+
+  this.movie = function(id, search, callback){
+    this.specific('movie', 'No movied id specified', id, search, callback)
   }
 
   // this must be called after all functions are declared above
