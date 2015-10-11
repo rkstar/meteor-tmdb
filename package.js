@@ -19,7 +19,7 @@ Package.onUse(function(api) {
   api.use('service-configuration', 'server')
   api.use('promise', 'server')
   api.use('reactive-dict', 'client')
-  api.use('momentjs:moment')
+  api.use('momentjs:moment@2.10.6')
 
   api.addFiles('tmdb.js')
   api.addFiles('tmdb-publication.js', 'server')
