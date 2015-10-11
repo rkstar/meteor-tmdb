@@ -1,22 +1,43 @@
-tmdbClient = new ReactiveDict('tmdbClient')
-tmdbClient.set('config', {})
-tmdbClient.set('imagePath', function(filename, size){
-  if( !filename || (filename.length < 1) ){
-    return ''
+let reactive = new ReactiveDict('ready', false)
+
+class Client {
+  constructor(){
+    console.warn('YOU SHOULD NOT BE INSTANTIATING THIS CLASS!')
+    return null
   }
-  size = size || 2
 
-  var config = TMDB.client.get('config').data.images,
-    path = config.secure_base_url
-  path += config.profile_sizes[size]
-  path += filename
-  return path
-})
+  static get ready(){
+    return reactive.get('ready')
+  }
 
-Meteor.startup(function(){
-  var tmdbConfig = new Mongo.Collection('tmdb-config')
+  static get config(){
+    return Client._config
+  }
+  static set config(value){
+    Client._config = value
+  }
+
+  static imagePath(filename, sizeIndex=2){
+    if( !Client.ready ){
+      console.warn('TMDB config is not loaded.')
+      return filename
+    }
+
+    let img = Client.config.data.images,
+      path = img.secure_base_url
+      path += img.profile_sizes[sizeIndex]
+      path += filename
+
+    return path
+  }
+}
+TMDB.Client = Client
+
+Meteor.startup(()=>{
+  let TMDBConfigurationSettings = new Mongo.Collection('tmdb-config')
   Meteor.subscribe('tmdb-config')
-  Tracker.autorun(function(){
-    tmdbClient.set('config', tmdbConfig.findOne())
+  Tracker.autorun(()=>{
+    Client.config = TMDBConfigurationSettings.findOne()
+    reactive.set('ready', (Client.config))
   })
 })

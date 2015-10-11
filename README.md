@@ -25,19 +25,24 @@ ServiceConfiguration.configurations.update({
 ```
 
 ## Methods (server)
-`TMDB.search(path, query, callback)`
+`let promise = TMDB.API.search(path, query)`
 * path => eg. "person"
 * query => eg. "brad pitt"
-* callback => `function(err, response){}`
 
-`TMDB.find(id, external_source, callback)`
+`let promise = TMDB.API.findById(id, external_source)`
 * id => eg. nm0000093
 * external_source => eg. 'IMDB'
-* callback => `function(err, response){}`
+
+`let promise = TMDB.API.person(id, searchFor)`
+`let promise = TMDB.API.movies(id, searchFor)`
+`let promise = TMDB.API.tv(id, searchFor)`
+* id => a valid TMDB id
+* searchFor => can be any of the options under the various paths [here](http://docs.themoviedb.apiary.io/#reference/people), [here](http://docs.themoviedb.apiary.io/#reference/movies), and [here](http://docs.themoviedb.apiary.io/#reference/tv).  if you pass *popular* or *latest*, pass `null` for `id`
+The `searchFor` path in `/person/{id}/movie_credits` would therefore be `movie_credits`
 
 ## Methods (client)
-You can access the [TMDB API Configuration](http://docs.themoviedb.apiary.io/#reference/configuration) by using the var `tmdb.config.data`
-You will be able to see the last time that data was reloaded via `tmdb.config.loaded` and you can choose to force reload via the API when you instantiate with `new TMDB({reload:true})`
+You can access the [TMDB API Configuration](http://docs.themoviedb.apiary.io/#reference/configuration) by using the var `TMDB.Client.config.data`
+You will be able to see the last time that data was reloaded via `TMDB.Client.config.loaded` and you can choose to force reload via the API when you instantiate with `new TMDB.API({reload:true})`
 
 
 ## Reading
