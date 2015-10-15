@@ -24,7 +24,7 @@ class API {
   }
 
   reload(){
-    var response = HTTP.call('GET', defaults.apiUrl+'configuration',{params:{api_key: this.config.apiKey}})
+    var response = HTTP.call('GET', this.defaults.apiUrl+'configuration',{params:{api_key: this.config.apiKey}})
     if( response.statusCode == 200 ){
       ServiceConfiguration.configurations.update(
         {service: 'tmdb'},
