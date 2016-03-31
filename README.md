@@ -44,6 +44,9 @@ The `searchFor` path in `/person/{id}/movie_credits` would therefore be `movie_c
 You can access the [TMDB API Configuration](http://docs.themoviedb.apiary.io/#reference/configuration) by using the var `TMDB.Client.config.data`
 You will be able to see the last time that data was reloaded via `TMDB.Client.config.loaded` and you can choose to force reload via the API when you instantiate with `new TMDB.API({reload:true})`
 
+`let imageSrc = TMDB.Client.imagePath(poster_path, size)`
+# poster_path => eg. the "poster_path" property returned by the TMDB api for a person, movie, tv, or credit
+# size => eg. the index of the size of the image you want. TMDB api provides 4 different sizes, increasing with the index. indexes are 0-3
 
 ## Reading
 [The Movie Database](https://www.themoviedb.org)
